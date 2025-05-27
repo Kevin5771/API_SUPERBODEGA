@@ -1,0 +1,46 @@
+@page
+@model SuperBodegaWeb.Pages.Account.LoginModel
+@{
+    Layout = "_Layout";
+}
+
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h3><i class="fa-solid fa-right-to-bracket me-2"></i>Iniciar Sesión</h3>
+                </div>
+                <div class="card-body">
+                    @* Mostrar errores de validación *@
+                    <form method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">Correo electrónico</label>
+                            <input asp-for="Username" class="form-control" placeholder="tú@correo.com" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">Contraseña</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" />
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Entrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    ¿No tienes cuenta? <a asp-page="/Account/Register">Regístrate aquí</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
