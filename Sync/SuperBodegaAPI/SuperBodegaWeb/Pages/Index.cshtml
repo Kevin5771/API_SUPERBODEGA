@@ -1,0 +1,47 @@
+﻿@page
+@model SuperBodegaWeb.Pages.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="container py-5">
+    <h2 class="text-center mb-4 text-primary fw-bold">
+        <i class="fa-solid fa-house"></i> Bienvenido a SuperBodegaWeb
+    </h2>
+
+    @if (Model.EsAdmin)
+    {
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-start border-success border-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Productos</h5>
+                        <p class="display-6 fw-bold text-success">@Model.TotalProductos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-start border-info border-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Clientes</h5>
+                        <p class="display-6 fw-bold text-info">@Model.TotalClientes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow border-start border-warning border-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Ventas</h5>
+                        <p class="display-6 fw-bold text-warning">@Model.TotalVentas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p class="text-center mt-4">Estás autenticado como cliente. Bienvenido a tu bodega de confianza.</p>
+    }
+</section>
