@@ -1,0 +1,32 @@
+@page "{id:int}"
+@model SuperBodegaWeb.Pages.Proveedores.EditModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<h2>Editar Proveedor</h2>
+<form method="post">
+  @* campo oculto para que el Id llegue en el POST *@
+  <input type="hidden" asp-for="Proveedor.Id" />
+
+  <div class="mb-3">
+    <label asp-for="Proveedor.Nombre" class="form-label"></label>
+    <input asp-for="Proveedor.Nombre" class="form-control"/>
+    <span asp-validation-for="Proveedor.Nombre" class="text-danger"></span>
+  </div>
+  <div class="mb-3">
+    <label asp-for="Proveedor.Email" class="form-label"></label>
+    <input asp-for="Proveedor.Email" class="form-control"/>
+    <span asp-validation-for="Proveedor.Email" class="text-danger"></span>
+  </div>
+  <div class="mb-3">
+    <label asp-for="Proveedor.Telefono" class="form-label"></label>
+    <input asp-for="Proveedor.Telefono" class="form-control"/>
+    <span asp-validation-for="Proveedor.Telefono" class="text-danger"></span>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Guardar</button>
+  <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+  <partial name="_ValidationScriptsPartial" />
+}
