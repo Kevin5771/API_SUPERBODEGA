@@ -1,0 +1,9 @@
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.csproj.AssemblyReference.cache
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.AssemblyInfoInputs.cache
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.AssemblyInfo.cs
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.csproj.CoreCompileInputs.cache
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.RazorAssemblyInfo.cache
+C:\Users\ChristopherBerganza\SuperBodegaAPI\obj\Debug\net8.0\SuperBodegaAPI.RazorAssemblyInfo.cs
