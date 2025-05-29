@@ -1,0 +1,94 @@
+@page
+@model SuperBodegaWeb.Pages.Ventas.IndexModel
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<h2 class="mb-4 text-center text-primary fw-bold">
+    <i class="fa-solid fa-receipt"></i> Ventas Registradas
+</h2>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <label asp-for="FechaInicio" class="form-label">Desde:</label>
+        <input asp-for="FechaInicio" type="date" class="form-control" />
+    </div>
+    <div class="col-md-4">
+        <label asp-for="FechaFin" class="form-label">Hasta:</label>
+        <input asp-for="FechaFin" type="date" class="form-control" />
+    </div>
+    <div class="col-md-4 align-self-end d-flex">
+        <button type="submit" class="btn btn-primary w-50 me-2">
+            <i class="fa-solid fa-filter"></i> Filtrar
+        </button>
+        <!-- Botón que lanza el handler ExportarExcel -->
+        <a asp-page-handler="ExportarExcel"
+           asp-route-fechaInicio="@Model.FechaInicio:yyyy-MM-dd"
+           asp-route-fechaFin="@Model.FechaFin:yyyy-MM-dd"
+           class="btn btn-success w-50">
+            <i class="fa-solid fa-file-excel"></i> Exportar Excel
+        </a>
+    </div>
+</form>
+
+@if (!Model.Ventas.Any())
+{
+    <div class="alert alert-warning text-center">
+        No hay ventas registradas para el rango seleccionado.
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="Actualizar">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for (int i = 0; i < Model.Ventas.Count; i++)
+            {
+                var v = Model.Ventas[i];
+                <tr>
+                    <td>@v.Fecha:yyyy-MM-dd</td>
+                    <td>@v.Cliente</td>
+                    <td>@v.Producto</td>
+                    <td>@v.Cantidad</td>
+                    <td>@v.PrecioUnitario.ToString("C")</td>
+                    <td>
+                        <select name="Estados[@i]" class="form-select">
+                            <option value="Recibido"
+                                    selected='@(v.Estado == "Recibido" ? "selected" : null)'>
+                                Recibido
+                            </option>
+                            <option value="Despachado"
+                                    selected='@(v.Estado == "Despachado" ? "selected" : null)'>
+                                Despachado
+                            </option>
+                            <option value="Entregado"
+                                    selected='@(v.Estado == "Entregado" ? "selected" : null)'>
+                                Entregado
+                            </option>
+                        </select>
+                        <input type="hidden" name="Ids[@i]" value="@v.Id" />
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            Guardar
+                        </button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </form>
+}
