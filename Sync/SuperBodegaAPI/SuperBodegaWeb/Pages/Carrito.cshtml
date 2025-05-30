@@ -1,0 +1,125 @@
+@page
+@model SuperBodegaWeb.Pages.CarritoModel
+@{
+    ViewData["Title"] = "Carrito";
+}
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<section class="container py-4">
+    <h2 class="text-center text-primary mb-4">
+        <i class="fa-solid fa-cart-shopping me-2"></i> Mi Carrito
+    </h2>
+
+    @if (!string.IsNullOrEmpty(Model.Mensaje))
+    {
+        <div class="alert alert-success text-center mb-4">
+            <i class="fa-solid fa-circle-check me-2"></i> @Model.Mensaje
+        </div>
+    }
+
+    @if (!Model.Items.Any())
+    {
+        <div class="alert alert-info text-center p-4">
+            <i class="fa-solid fa-box-open fa-2x mb-2"></i>
+            <p class="mb-0">No hay productos en tu carrito.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle shadow-sm rounded">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr class="text-center">
+                        <td class="text-start">
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@Url.Content(item.ImagenUrl)" width="60" height="60" style="object-fit: cover; border-radius: 8px;" />
+                                <div>
+                                    <strong>@item.NombreProducto</strong><br />
+                                    <small class="text-muted">@item.Categoria</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>Q @item.Precio.ToString("0.00")</td>
+                        <td>
+                            <form method="post" asp-page-handler="ActualizarCantidad" class="d-flex justify-content-center align-items-center gap-2">
+                                <input type="hidden" name="ProductoId" value="@item.ProductoId" />
+                                <input type="number" name="Cantidad" value="@item.Cantidad" min="1" class="form-control form-control-sm text-center" style="width: 60px;" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm" title="Actualizar cantidad">
+                                    <i class="fa-solid fa-rotate"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td>Q @item.Subtotal.ToString("0.00")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Eliminar">
+                                <input type="hidden" name="ProductoId" value="@item.ProductoId" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Deseas eliminar este producto del carrito?')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h4 class="text-primary">Total a Pagar: Q @Model.Total.ToString("0.00")</h4>
+            <form id="comprarForm" method="post" asp-page-handler="Comprar">
+                <button type="button" class="btn btn-success btn-lg" onclick="comprarAsync()">
+                    <i class="fa-solid fa-money-bill-wave me-1"></i> Comprar Todo
+                </button>
+            </form>
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        async function comprarAsync() {
+            try {
+                const form = document.getElementById('comprarForm');
+                const data = new FormData(form);
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: data
+                });
+
+                if (!response.ok) {
+                    window.location.reload();
+                    return;
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Factura_${new Date().toISOString()}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+
+                window.location.href = window.location.pathname;
+            } catch (err) {
+                console.error(err);
+                alert('❌ Error al procesar la compra.');
+            }
+        }
+    </script>
+}
