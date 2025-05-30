@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "WdAPSpFKo+NVmJKDtugCivz9lDA6pX0MHLMnJTzdhx4=",
+  "Source": "SuperBodegaAPI",
+  "BasePath": "_content/SuperBodegaAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
