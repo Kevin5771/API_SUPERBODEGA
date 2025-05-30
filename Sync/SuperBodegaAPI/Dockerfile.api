@@ -1,0 +1,24 @@
+# Etapa de build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copiamos solo lo necesario para la API
+COPY SuperBodegaAPI.csproj ./
+RUN dotnet restore
+
+# Copiamos el resto de archivos del API (evita SuperBodegaWeb)
+COPY Controllers ./Controllers
+COPY Models ./Models
+COPY Data ./Data
+COPY Migrations ./Migrations
+COPY Program.cs ./
+COPY appsettings.json ./
+
+RUN dotnet publish SuperBodegaAPI.csproj -c Release -o /app/publish
+
+# Etapa de runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "SuperBodegaAPI.dll"]
