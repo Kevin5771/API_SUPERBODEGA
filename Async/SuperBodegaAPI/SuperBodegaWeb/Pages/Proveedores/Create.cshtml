@@ -1,0 +1,35 @@
+@page
+@model SuperBodegaWeb.Pages.Proveedores.CreateModel
+@{
+    ViewData["Title"] = "Crear Proveedor";
+}
+<h2>@ViewData["Title"]</h2>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+  <div class="mb-3">
+    <label asp-for="Proveedor.Nombre" class="form-label">Nombre</label>
+    <input asp-for="Proveedor.Nombre" class="form-control" />
+    <span asp-validation-for="Proveedor.Nombre" class="text-danger"></span>
+  </div>
+
+  <div class="mb-3">
+    <label asp-for="Proveedor.Telefono" class="form-label">Teléfono</label>
+    <input asp-for="Proveedor.Telefono" class="form-control" />
+    <span asp-validation-for="Proveedor.Telefono" class="text-danger"></span>
+  </div>
+
+  <div class="mb-3">
+    <label asp-for="Proveedor.Email" class="form-label">Email</label>
+    <input asp-for="Proveedor.Email" class="form-control" />
+    <span asp-validation-for="Proveedor.Email" class="text-danger"></span>
+  </div>
+
+  <button type="submit" class="btn btn-success">Guardar</button>
+  <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+  <partial name="_ValidationScriptsPartial" />
+}

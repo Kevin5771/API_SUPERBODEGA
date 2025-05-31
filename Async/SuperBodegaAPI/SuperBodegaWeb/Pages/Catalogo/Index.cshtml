@@ -1,0 +1,63 @@
+@page
+@model SuperBodegaWeb.Pages.Catalogo.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<section class="container py-4">
+    <h2 class="mb-4 text-center text-primary fw-bold">
+        <i class="fa-solid fa-store"></i> Catálogo de Productos
+    </h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            @TempData["Mensaje"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model.Productos?.Any() == true)
+    {
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            @foreach (var p in Model.Productos)
+            {
+                <div class="col">
+                    <div class="card border-0 shadow-sm h-100">
+                        <!-- Imagen -->
+                        <div class="position-relative bg-light d-flex justify-content-center align-items-center" style="height: 180px;">
+                            <img src="@Url.Content(string.IsNullOrWhiteSpace(p.ImagenUrl) ? "~/images/placeholder.png" : $"~/{p.ImagenUrl.TrimStart('/')}")"
+                                 alt="@p.Nombre"
+                                 style="max-height: 160px; max-width: 100%; object-fit: contain;" />
+                        </div>
+
+                        <!-- Info producto -->
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold text-dark">@p.Nombre</h5>
+                            <p class="text-muted mb-1">Categoría: @p.Categoria</p>
+                            <p class="text-muted mb-1">Proveedor: @p.Proveedor</p>
+                            <p class="mb-1"><strong>Precio:</strong> <span class="text-success">Q @p.Precio.ToString("0.00")</span></p>
+                            <p class="mb-2"><strong>Stock:</strong> @p.Stock unidades disponibles</p>
+
+                            <form method="post" asp-page-handler="AgregarAlCarrito" class="d-inline">
+                                <input type="hidden" name="productoId" value="@p.Id" />
+                                <input type="hidden" name="cantidad" value="1" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                                    <i class="fa fa-cart-plus"></i> Agregar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center mt-4">
+            No hay productos disponibles actualmente.
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

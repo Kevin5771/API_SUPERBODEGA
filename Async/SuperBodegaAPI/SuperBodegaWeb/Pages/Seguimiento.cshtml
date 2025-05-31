@@ -1,0 +1,162 @@
+@page
+@model SuperBodegaWeb.Pages.SeguimientoModel
+@{
+    ViewData["Title"] = "Seguimiento de Pedido";
+
+    // Configuración de estados e iconos
+    var estados       = new[] { "Recibido", "Despachado", "Entregado" };
+    var iconos        = new[] { "box", "truck", "check-circle" };
+    var fechasPorEstado = Model.Resultado?
+        .Cambios
+        .GroupBy(c => c.EstadoNuevo)
+        .ToDictionary(g => g.Key, g => g.First().Fecha)
+      ?? new Dictionary<string, DateTime>();
+
+    // Cálculo del índice actual y porcentaje de progreso
+    int actualIndex = Model.Resultado != null
+        ? Array.IndexOf(estados, Model.Resultado.EstadoActual)
+        : -1;
+    double progreso = Model.Resultado != null
+        ? ((actualIndex + 1) / (double)estados.Length) * 100
+        : 0;
+}
+
+<h2 class="text-center mb-4 text-primary">Seguimiento de Pedido</h2>
+
+<form method="get" class="row mb-4">
+  <div class="col-md-8">
+    <input asp-for="Codigo"
+           class="form-control"
+           placeholder="Ingrese código de seguimiento..." />
+  </div>
+  <div class="col-md-4">
+    <button type="submit" class="btn btn-primary w-100">
+      <i class="fa-solid fa-magnifying-glass"></i> Buscar
+    </button>
+  </div>
+</form>
+
+@if (Model.Codigo != null && Model.Resultado == null)
+{
+  <div class="alert alert-warning text-center">
+    No se encontró ningún pedido con el código especificado.
+  </div>
+}
+
+@if (Model.Resultado != null)
+{
+  <div class="card shadow-sm p-4 mb-4">
+
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <strong>Cliente:</strong> @Model.Resultado.Cliente
+      </div>
+      <div class="col-md-6 text-end">
+        <strong>Código:</strong> @Model.Resultado.CodigoSeguimiento
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col">
+        <strong>Fecha:</strong>
+        @Model.Resultado.FechaVenta.ToString("dd/MM/yyyy HH:mm:ss")
+      </div>
+    </div>
+
+    <!-- Timeline de estados -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      @for (int i = 0; i < estados.Length; i++)
+      {
+        bool completado = i <= actualIndex;
+        <div class="text-center flex-fill position-relative">
+          <i class="fa-solid fa-@iconos[i] fa-2x @(completado ? "text-success" : "text-muted")"></i>
+          <div class="mt-2 @(completado ? "fw-bold text-success" : "text-muted")">
+            @estados[i]
+          </div>
+          @if (fechasPorEstado.ContainsKey(estados[i]))
+          {
+            <small class="d-block text-muted">
+              @fechasPorEstado[estados[i]].ToString("dd/MM HH:mm")
+            </small>
+          }
+          @if (i < estados.Length - 1)
+          {
+            <div class="position-absolute top-50 start-100 translate-middle-y"
+                 style="
+                   width: 100%; height: 4px;
+                   background: @(completado
+                     ? "linear-gradient(to right, #198754 0%, #198754 100%)"
+                     : "linear-gradient(to right, #ccc 0%, #ccc 100%)");
+                   z-index: -1;">
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress mb-4" style="height: 8px;">
+      <div class="progress-bar bg-success"
+           role="progressbar"
+           style="width: @progreso%">
+      </div>
+    </div>
+
+    <!-- Productos vendidos -->
+    <h5 class="mt-4">Productos Vendidos</h5>
+    <div class="table-responsive mb-4">
+      <table class="table table-sm table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th class="text-end">Cantidad</th>
+            <th class="text-end">Precio Unit. (Q)</th>
+            <th class="text-end">Subtotal (Q)</th>
+          </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Resultado.Items)
+        {
+          <tr>
+            <td>@item.NombreProducto</td>
+            <td class="text-end">@item.Cantidad</td>
+            <td class="text-end">
+              @($"Q{item.PrecioUnitario:N2}")
+            </td>
+            <td class="text-end">
+              @($"Q{item.Cantidad * item.PrecioUnitario:N2}")
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Historial de cambios -->
+    <h5 class="mt-4">Historial de Cambios</h5>
+    <div class="row g-3">
+      @foreach (var cambio in Model.Resultado.Cambios.OrderByDescending(c => c.Fecha))
+      {
+        bool esActual = cambio.EstadoNuevo == Model.Resultado.EstadoActual;
+        <div class="col-md-4">
+          <div class="card border-@(esActual ? "success" : "secondary")">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between">
+                <span class="badge bg-@(esActual ? "success" : "secondary")">
+                  @cambio.EstadoNuevo
+                </span>
+                <small class="text-muted">
+                  @cambio.Fecha.ToString("dd/MM/yyyy HH:mm")
+                </small>
+              </div>
+              <div class="mt-2">
+                <small>de <em>@cambio.EstadoAnterior</em></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+}

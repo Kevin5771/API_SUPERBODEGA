@@ -1,0 +1,66 @@
+@page
+@model SuperBodegaWeb.Pages.Productos.CreateModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<section class="container py-4">
+  <h2 class="text-center text-primary mb-4">
+    <i class="fa-solid fa-plus me-2"></i>Nuevo Producto
+  </h2>
+
+  @if (Model.Mensaje != null)
+  {
+    <div class="alert alert-success">@Model.Mensaje</div>
+  }
+
+  @if (Model.Error != null)
+  {
+    <div class="alert alert-danger">@Model.Error</div>
+  }
+
+  <form method="post" enctype="multipart/form-data" class="mx-auto" style="max-width:600px;">
+    <div class="mb-3">
+      <label asp-for="Producto.Nombre" class="form-label"></label>
+      <input asp-for="Producto.Nombre" class="form-control" />
+      <span asp-validation-for="Producto.Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+      <label asp-for="Producto.Precio" class="form-label"></label>
+      <input asp-for="Producto.Precio" class="form-control" type="number" step="0.01" min="0" />
+      <span asp-validation-for="Producto.Precio" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+      <label asp-for="Producto.Stock" class="form-label"></label>
+      <input asp-for="Producto.Stock" class="form-control" type="number" min="0" />
+      <span asp-validation-for="Producto.Stock" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+      <label asp-for="Producto.Categoria" class="form-label"></label>
+      <input asp-for="Producto.Categoria" class="form-control" />
+      <span asp-validation-for="Producto.Categoria" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+      <label asp-for="Producto.Imagen" class="form-label">Imagen</label>
+      <input asp-for="Producto.Imagen" type="file" class="form-control" />
+      <span asp-validation-for="Producto.Imagen" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+      <label asp-for="Producto.ProveedorId" class="form-label">Proveedor</label>
+      <select asp-for="Producto.ProveedorId" class="form-select" asp-items="Model.Proveedores">
+        <option value="">-- Selecciona --</option>
+      </select>
+      <span asp-validation-for="Producto.ProveedorId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear</button>
+    <a asp-page="Index" class="btn btn-secondary ms-2">Cancelar</a>
+  </form>
+</section>
+
+@section Scripts {
+  <partial name="_ValidationScriptsPartial" />
+}

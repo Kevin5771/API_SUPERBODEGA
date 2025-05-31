@@ -1,0 +1,22 @@
+@page
+@model SuperBodegaWeb.Pages.Clientes.CreateModel
+@{
+    ViewData["Title"] = "Crear Cliente";
+}
+<h2>@ViewData["Title"]</h2>
+<form method="post">
+  <div class="mb-3">
+    <label asp-for="Cliente.Nombre" class="form-label">Nombre</label>
+    <input asp-for="Cliente.Nombre" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label asp-for="Cliente.Email" class="form-label">Email</label>
+    <input asp-for="Cliente.Email" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label asp-for="Cliente.Telefono" class="form-label">Teléfono</label>
+    <input asp-for="Cliente.Telefono" class="form-control" />
+  </div>
+  <button type="submit" class="btn btn-success">Guardar</button>
+  <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
