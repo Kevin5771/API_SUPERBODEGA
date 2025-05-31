@@ -1,0 +1,33 @@
+# Dockerfile.db
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+USER root
+
+# 1) Prepara repositorio de paquetes y herramientas
+RUN apt-get update \
+ && apt-get install -y curl apt-transport-https gnupg \
+ && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+ && curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list \
+      > /etc/apt/sources.list.d/mssql-release.list \
+ && apt-get update \
+ && ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools \
+ && ln -s /opt/mssql-tools/bin/sqlcmd /usr/local/bin/sqlcmd \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copiamos el script de inicialización
+WORKDIR /usr/src/app
+COPY init.sql .
+
+# Script de arranque que lanza SQL, espera y aplica init.sql
+COPY init-db.sh .
+RUN chmod +x init-db.sh
+
+# Volvemos a usuario mssql
+USER mssql
+
+# Exponer puerto y declarar variables
+EXPOSE 1433
+ENV SA_PASSWORD="SuperBodega2025!" \
+    ACCEPT_EULA=Y
+
+ENTRYPOINT ["/usr/src/app/init-db.sh"]

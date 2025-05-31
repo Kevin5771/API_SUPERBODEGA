@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: superbodega-db
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "SuperBodega2025!"
+      ACCEPT_EULA: "Y"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: superbodega-api
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+      - rabbitmq 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: superbodega-web
+    ports:
+      - "8088:8080"
+    depends_on:
+      - api
+    environment:
+      - ApiBaseUrl=http://api
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./SuperBodegaWeb/wwwroot/images:/app/wwwroot/images
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: superbodega-rabbit
+    ports:
+      - "5672:5672"    
+      - "15672:15672"   
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
